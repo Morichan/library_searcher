@@ -1,0 +1,53 @@
+# carton snapshot format: version 1.0
+DISTRIBUTIONS
+  CGI-4.40
+    pathname: L/LE/LEEJO/CGI-4.40.tar.gz
+    provides:
+      CGI 4.40
+      CGI::Carp 4.40
+      CGI::Cookie 4.40
+      CGI::File::Temp 4.40
+      CGI::HTML::Functions undef
+      CGI::MultipartBuffer 4.40
+      CGI::Pretty 4.40
+      CGI::Push 4.40
+      CGI::Util 4.40
+      Fh 4.40
+    requirements:
+      Carp 0
+      Config 0
+      Encode 0
+      Exporter 0
+      ExtUtils::MakeMaker 0
+      File::Spec 0.82
+      File::Temp 0.17
+      HTML::Entities 3.69
+      base 0
+      if 0
+      overload 0
+      parent 0.225
+      perl 5.008001
+      strict 0
+      utf8 0
+      warnings 0
+  HTML-Parser-3.72
+    pathname: G/GA/GAAS/HTML-Parser-3.72.tar.gz
+    provides:
+      HTML::Entities 3.69
+      HTML::Filter 3.72
+      HTML::HeadParser 3.71
+      HTML::LinkExtor 3.69
+      HTML::Parser 3.72
+      HTML::PullParser 3.57
+      HTML::TokeParser 3.69
+    requirements:
+      ExtUtils::MakeMaker 0
+      HTML::Tagset 3
+      XSLoader 0
+      perl 5.008
+  HTML-Tagset-3.20
+    pathname: P/PE/PETDANCE/HTML-Tagset-3.20.tar.gz
+    provides:
+      HTML::Tagset 3.20
+    requirements:
+      ExtUtils::MakeMaker 0
