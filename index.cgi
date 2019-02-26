@@ -27,9 +27,8 @@ use lib::Index;
 
 
 sub main {
-    my $index = Index->new;
+    my $index = lib::Index->new;
 
-    $index->create;
     $index->show;
 }
 

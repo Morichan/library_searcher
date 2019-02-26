@@ -1,18 +1,18 @@
-package Index;
+package lib::Index;
 
 use Mouse;
 use CGI;
 
-use lib::Param;
+use lib::LibrarySearcher;
 
 has q => ( is => "rw" );
-has param => ( is => "rw" );
+has library_searcher => ( is => "rw" );
 
-sub create {
+sub BUILD {
     my $self = shift;
 
     $self->q(CGI->new);
-    $self->param(Param->new);
+    $self->library_searcher(lib::LibrarySearcher->new);
 }
 
 sub show {
@@ -20,9 +20,9 @@ sub show {
 
     $self->header;
     $self->start;
-    $self->h1("Hello");
+    # $self->h1("Hello");
 
-    $self->param->create;
+    $self->library_searcher->show;
 
     $self->end;
 }
@@ -36,7 +36,11 @@ sub header {
 sub start {
     my $self = shift;
 
-    print $self->q->start_html( -title => "title", -lang => "ja", -encoding => "utf-8" );
+    print $self->q->start_html(
+        -title => "title",
+        -style => { -code => $self->library_searcher->style },
+        -lang => "ja",
+        -encoding => "utf-8" );
 }
 
 sub end {
