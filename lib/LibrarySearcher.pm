@@ -12,11 +12,21 @@ use lib::ResultArea;
 has q => ( is => "rw" );
 has left => ( is => "ro", default => "float: left;" );
 has right => ( is => "ro", default => "float: right;" );
+has title => ( is => "rw" );
+has author => ( is => "rw" );
+has isbn => ( is => "rw" );
+has publisher => ( is => "rw" );
+has result_area => ( is => "rw" );
 
 sub BUILD {
     my $self = shift;
 
     $self->q(CGI->new);
+    $self->title(lib::Title->new);
+    $self->author(lib::Author->new);
+    $self->isbn(lib::ISBN->new);
+    $self->publisher(lib::Publisher->new);
+    $self->result_area(lib::ResultArea->new);
 }
 
 sub show {
@@ -48,10 +58,10 @@ sub searchbox {
     return (
         $self->q->start_div( {-class => "searchbox"} ),
         $self->q->start_form( -method => "POST" ),
-        $title->show,
-        $author->show,
-        $isbn->show,
-        $publisher->show,
+        $self->title->show,
+        $self->author->show,
+        $self->isbn->show,
+        $self->publisher->show,
         $self->q->end_form,
         $self->q->end_div,
         "\n\n");
@@ -64,7 +74,7 @@ sub result {
     return (
         $self->q->start_div( {-class => "result"} ),
         $self->q->start_form( -method => "POST" ),
-        $result_area->show,
+        $self->result_area->show,
         $self->q->end_form,
         $self->q->end_div,
         "\n\n");
