@@ -19,14 +19,14 @@ sub BUILD {
 sub show {
     my $self = shift;
 
-    return $self->q->p(
+    return (
         $self->q->start_div({-class => "textfield"}),
-        $self->title . ": ",
-        $self->q->textfield(
-            -name => $self->name,
-            -default => $self->default,
-            -size => 50,
-            -maxlength => $self->maxlength),
+        $self->q->p($self->title . ": "),
+        $self->q->p($self->q->textfield(
+                -name => $self->name,
+                -default => $self->default,
+                -size => 50,
+                -maxlength => $self->maxlength)),
         $self->q->end_div,
         "\n");
 }

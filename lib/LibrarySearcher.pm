@@ -7,6 +7,7 @@ use lib::Title;
 use lib::Author;
 use lib::ISBN;
 use lib::Publisher;
+use lib::ResultArea;
 
 has q => ( is => "rw" );
 has left => ( is => "ro", default => "float: left;" );
@@ -58,18 +59,15 @@ sub searchbox {
 
 sub result {
     my $self = shift;
-    my @containts;
+    my $result_area = lib::ResultArea->new;
 
-    push @containts, $self->q->start_div( {-class => "result"} );
-    push @containts, $self->q->start_form( -method => "POST" );
-    push @containts, $self->q->p($self->q->textfield(-name => "hoge",
-      -default => "starting values",
-      -size => 50,
-      -maxlength => 20));
-    push @containts, $self->q->end_form;
-    push @containts, $self->q->end_div;
-
-    return @containts;
+    return (
+        $self->q->start_div( {-class => "result"} ),
+        $self->q->start_form( -method => "POST" ),
+        $result_area->show,
+        $self->q->end_form,
+        $self->q->end_div,
+        "\n\n");
 }
 
 sub style {
@@ -81,7 +79,7 @@ sub style {
     $text .= ".result {\n";
     $text .= "  " . $self->left . "\n";
     $text .= "}\n";
-    $text .= "p {\n";
+    $text .= "form {\n";
     $text .= "  margin-inline-start: 1em;\n";
     $text .= "  margin-inline-end: 1em;\n";
     $text .= "}\n";
