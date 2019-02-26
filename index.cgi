@@ -3,7 +3,10 @@
 use strict;
 use warnings;
 
-use CGI;
+use FindBin;
+use lib $FindBin::Bin;
+
+use lib::Index;
 
 =head1 index.cgi
 
@@ -24,11 +27,9 @@ use CGI;
 
 
 sub main {
-    my $q = new CGI;
+    my $index = Index->new;
 
-    print $q->header( -charset => "utf-8" );
-    print $q->start_html( -title => "title", -lang => "ja", -encoding => "utf-8" );
-    print $q->h1("Hello, world!");
-    print $q->end_html();
+    $index->create;
+    $index->show;
 }
 
