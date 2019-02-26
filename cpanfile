@@ -1,1 +1,2 @@
 requires "CGI";
+requires "Mouse";
