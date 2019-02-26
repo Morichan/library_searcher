@@ -47,6 +47,7 @@ sub end {
     my $self = shift;
 
     print $self->q->end_html();
+    print "\n";
 }
 
 sub h1 {
