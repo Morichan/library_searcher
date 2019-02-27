@@ -5,7 +5,7 @@ use CGI;
 
 has q => ( is => "rw" );
 has name => ( is => "ro", default => "result" );
-has default => ( is => "ro", default => "ここに結果を出力します。\n\nタイトル:\n著者:\nISBN:\n価格:\n出版社:\n出版年:\n\n全ての項目を埋める必要はありません。" );
+has containts => ( is => "rw", default => "ここに結果を出力します。\n\nタイトル:\n著者:\nISBN:\n価格:\n出版社:\n出版年:\n\n全ての項目を埋める必要はありません。" );
 
 sub BUILD {
     my $self = shift;
@@ -20,7 +20,7 @@ sub show {
         $self->q->start_div({-class => "result"}),
         $self->q->textarea(
             -name => $self->name,
-            -default => $self->default,
+            -default => $self->containts,
             -rows => 50,
             -columns => 50),
         $self->q->end_div,

@@ -7,7 +7,9 @@ use lib::Title;
 use lib::Author;
 use lib::ISBN;
 use lib::Publisher;
+use lib::SearchButton;
 use lib::ResultArea;
+use lib::Result;
 
 has q => ( is => "rw" );
 has left => ( is => "ro", default => "float: left;" );
@@ -16,7 +18,9 @@ has title => ( is => "rw" );
 has author => ( is => "rw" );
 has isbn => ( is => "rw" );
 has publisher => ( is => "rw" );
+has search_button => ( is => "rw" );
 has result_area => ( is => "rw" );
+has result => ( is => "rw" );
 
 sub BUILD {
     my $self = shift;
@@ -26,13 +30,29 @@ sub BUILD {
     $self->author(lib::Author->new);
     $self->isbn(lib::ISBN->new);
     $self->publisher(lib::Publisher->new);
+    $self->search_button(lib::SearchButton->new);
     $self->result_area(lib::ResultArea->new);
+    $self->search_button->q($self->q);
+    $self->result(lib::Result->new);
 }
 
 sub show {
     my $self = shift;
 
-    $self->containts($self->searchbox, $self->result);
+    $self->set_result;
+
+    if ($self->result->has_result) {
+        $self->containts($self->searchbox, "AAAAA");
+    } else {
+        $self->containts($self->searchbox, $self->print_result);
+    }
+}
+
+sub set_result {
+    my $self = shift;
+
+    my $title = $self->q->param("title") || "";
+    print $self->result->title($title);
 }
 
 sub containts {
@@ -50,10 +70,6 @@ sub containts {
 
 sub searchbox {
     my $self = shift;
-    my $title = lib::Title->new;
-    my $author = lib::Author->new;
-    my $isbn = lib::ISBN->new;
-    my $publisher = lib::Publisher->new;
 
     return (
         $self->q->start_div( {-class => "searchbox"} ),
@@ -62,14 +78,14 @@ sub searchbox {
         $self->author->show,
         $self->isbn->show,
         $self->publisher->show,
+        $self->search_button->show,
         $self->q->end_form,
         $self->q->end_div,
         "\n\n");
 }
 
-sub result {
+sub print_result {
     my $self = shift;
-    my $result_area = lib::ResultArea->new;
 
     return (
         $self->q->start_div( {-class => "result"} ),
