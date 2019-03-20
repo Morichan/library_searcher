@@ -39,20 +39,7 @@ sub BUILD {
 sub show {
     my $self = shift;
 
-    if (not $self->has_result) {
-        $self->containts($self->print_searchbox, $self->print_result);
-    } else {
-        $self->containts($self->print_searchbox, $self->print_result($self->result->title));
-    }
-}
-
-sub has_result {
-    my $self = shift;
-
-    my $title = $self->q->param("title") || "";
-    print $self->result->title($title);
-
-    return $self->result->has_result;
+    $self->containts($self->print_searchbox, $self->print_result);
 }
 
 sub containts {
@@ -87,11 +74,19 @@ sub print_searchbox {
 sub print_result {
     my $self = shift;
 
-    if (not @_) {
-        return $self->result->show;
-    } else {
-        return $self->result->show(shift);
+    if ($self->has_result) {
+        $self->result->make_containts;
     }
+
+    return $self->result->show;
+}
+
+sub has_result {
+    my $self = shift;
+
+    print $self->result->title($self->q->param("title") || "");
+
+    return $self->result->has_result;
 }
 
 sub style {

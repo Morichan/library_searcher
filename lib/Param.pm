@@ -14,6 +14,7 @@ sub BUILD {
     my $self = shift;
 
     $self->q(CGI->new);
+    $self->default(shift) if @_;
 }
 
 sub show {
