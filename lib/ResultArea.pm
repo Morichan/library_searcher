@@ -16,6 +16,9 @@ sub BUILD {
 sub show {
     my $self = shift;
 
+    if (@_) {
+        $self->containts(shift);
+    }
     return $self->q->p(
         $self->q->start_div({-class => "result"}),
         $self->q->textarea(

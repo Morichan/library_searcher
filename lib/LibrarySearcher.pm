@@ -39,20 +39,20 @@ sub BUILD {
 sub show {
     my $self = shift;
 
-    $self->set_result;
-
-    if ($self->result->has_result) {
-        $self->containts($self->searchbox, "AAAAA");
-    } else {
+    if (not $self->has_result) {
         $self->containts($self->searchbox, $self->print_result);
+    } else {
+        $self->containts($self->searchbox, $self->print_result($self->result->title));
     }
 }
 
-sub set_result {
+sub has_result {
     my $self = shift;
 
     my $title = $self->q->param("title") || "";
     print $self->result->title($title);
+
+    return $self->result->has_result;
 }
 
 sub containts {
@@ -87,13 +87,11 @@ sub searchbox {
 sub print_result {
     my $self = shift;
 
-    return (
-        $self->q->start_div( {-class => "result"} ),
-        $self->q->start_form( -method => "POST" ),
-        $self->result_area->show,
-        $self->q->end_form,
-        $self->q->end_div,
-        "\n\n");
+    if (not @_) {
+        return $self->result->show;
+    } else {
+        return $self->result->show(shift);
+    }
 }
 
 sub style {
