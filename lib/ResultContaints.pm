@@ -1,4 +1,4 @@
-package lib::ResultArea;
+package lib::ResultContaints;
 
 use Mouse;
 use CGI;

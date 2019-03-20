@@ -8,7 +8,6 @@ use lib::Author;
 use lib::ISBN;
 use lib::Publisher;
 use lib::SearchButton;
-use lib::ResultArea;
 use lib::Result;
 
 has q => ( is => "rw" );
@@ -19,7 +18,6 @@ has author => ( is => "rw" );
 has isbn => ( is => "rw" );
 has publisher => ( is => "rw" );
 has search_button => ( is => "rw" );
-has result_area => ( is => "rw" );
 has result => ( is => "rw" );
 
 sub BUILD {
@@ -31,7 +29,6 @@ sub BUILD {
     $self->isbn(lib::ISBN->new);
     $self->publisher(lib::Publisher->new);
     $self->search_button(lib::SearchButton->new);
-    $self->result_area(lib::ResultArea->new);
     $self->search_button->q($self->q);
     $self->result(lib::Result->new);
 }
