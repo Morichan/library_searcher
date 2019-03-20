@@ -40,9 +40,9 @@ sub show {
     my $self = shift;
 
     if (not $self->has_result) {
-        $self->containts($self->searchbox, $self->print_result);
+        $self->containts($self->print_searchbox, $self->print_result);
     } else {
-        $self->containts($self->searchbox, $self->print_result($self->result->title));
+        $self->containts($self->print_searchbox, $self->print_result($self->result->title));
     }
 }
 
@@ -68,7 +68,7 @@ sub containts {
     print $self->q->end_div;
 }
 
-sub searchbox {
+sub print_searchbox {
     my $self = shift;
 
     return (

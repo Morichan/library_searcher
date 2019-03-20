@@ -21,7 +21,7 @@ sub show {
 
     return (
         $self->q->start_div({-class => "textfield"}),
-        $self->q->p($self->title . ": "),
+        $self->q->p($self->title . ":"),
         $self->q->p($self->q->textfield(
                 -name => $self->name,
                 -default => $self->default,
@@ -29,6 +29,12 @@ sub show {
                 -maxlength => $self->maxlength)),
         $self->q->end_div,
         "\n");
+}
+
+sub print_text {
+    my $self = shift;
+
+    $self->title . ": " . $self->default;
 }
 
 1;
