@@ -13,7 +13,6 @@ use lib::Year;
 has q => ( is => "rw" );
 has name => ( is => "ro", default => "result" );
 has containts => ( is => "rw", default => "" );
-has has_searched => ( is => "rw", default => 0 );
 has title => ( is => "rw" );
 has author => ( is => "rw" );
 has isbn => ( is => "rw" );
@@ -67,22 +66,18 @@ sub create_default_containts {
 sub show {
     my $self = shift;
 
-    if ($self->has_searched) {
-        $self->make_containts;
-    }
-    return $self->q->p(
-        $self->q->start_div({-class => "result"}),
-        $self->q->textarea(
-            -name => $self->name,
-            -default => $self->containts,
-            -rows => 50,
-            -columns => 50),
-        $self->q->end_div,
-        "\n");
+    return $self->containts;
 }
 
 sub make_containts {
     my $self = shift;
+
+    # $self->title->default(shift);
+    # $self->author->default(shift);
+    # $self->isbn->default(shift);
+    # $self->price->default(shift);
+    # $self->publisher->default(shift);
+    # $self->year->default(shift);
 
     $self->containts(
         $self->title->print_text .

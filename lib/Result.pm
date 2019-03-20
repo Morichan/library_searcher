@@ -6,7 +6,8 @@ use CGI;
 use lib::ResultContaints;
 
 has q => ( is => "rw" );
-has result_containts => ( is => "rw" );
+has name => ( is => "ro", default => "result" );
+has result_containts_list => ( is => "rw" );
 has title => ( is => "rw" );
 has author => ( is => "rw" );
 has isbn => ( is => "rw" );
@@ -16,7 +17,7 @@ sub BUILD {
     my $self = shift;
 
     $self->q(CGI->new);
-    $self->result_containts(lib::ResultContaints->new);
+    $self->result_containts_list([lib::ResultContaints->new]);
 }
 
 sub has_result {
@@ -35,27 +36,57 @@ sub show {
     my $self = shift;
 
     if ($self->has_result) {
-        $self->result_containts->has_searched(1);
+        $self->make_containts;
     }
 
     return (
         $self->q->start_div( {-class => "result"} ),
         $self->q->start_form( -method => "POST" ),
-        $self->result_containts->show,
+        $self->show_result_area,
         $self->q->end_form,
         $self->q->end_div,
         "\n\n");
 }
 
+sub show_result_area {
+    my $self = shift;
+
+    return $self->q->p(
+        $self->q->start_div({-class => "result"}),
+        $self->q->textarea(
+            -name => $self->name,
+            -default => $self->show_containts,
+            -rows => 50,
+            -columns => 50),
+        $self->q->end_div,
+        "\n");
+}
+
+sub show_containts {
+    my $self = shift;
+
+    my @list = ();
+
+    foreach my $content (@{$self->result_containts_list}) {
+        push @list, $content->show;
+    }
+
+    return @list;
+}
+
 sub make_containts {
     my $self = shift;
 
-    $self->result_containts->title(lib::Title->new(default => $self->title));
-    $self->result_containts->author(lib::Author->new(default => $self->author));
-    $self->result_containts->isbn(lib::ISBN->new(default => $self->isbn));
-    $self->result_containts->price(lib::Price->new(default => "3,888円"));
-    $self->result_containts->publisher(lib::Publisher->new(default => $self->publisher));
-    $self->result_containts->year(lib::Year->new(default => 2018));
+    foreach my $containt (@{$self->result_containts_list}) {
+        $containt->title(lib::Title->new(default => $self->title));
+        $containt->author(lib::Author->new(default => $self->author));
+        $containt->isbn(lib::ISBN->new(default => $self->isbn));
+        $containt->price(lib::Price->new(default => "3,888円"));
+        $containt->publisher(lib::Publisher->new(default => $self->publisher));
+        $containt->year(lib::Year->new(default => 2018));
+
+        $containt->make_containts;
+    }
 }
 
 1;
