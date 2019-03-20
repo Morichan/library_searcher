@@ -34,6 +34,12 @@ sub BUILD {
     $self->create_default_containts;
 }
 
+sub show {
+    my $self = shift;
+
+    return $self->containts;
+}
+
 sub create_default_containts {
     my $self = shift;
 
@@ -61,12 +67,6 @@ sub create_default_containts {
         "\n\n" .
         "全ての項目を埋める必要はありません。"
     );
-}
-
-sub show {
-    my $self = shift;
-
-    return $self->containts;
 }
 
 sub make_containts {

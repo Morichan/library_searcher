@@ -71,19 +71,22 @@ sub print_searchbox {
 sub print_result {
     my $self = shift;
 
-    if ($self->has_result) {
-        $self->result->make_containts;
+    if ($self->has_input) {
+        $self->result->make_containts_list;
     }
 
     return $self->result->show;
 }
 
-sub has_result {
+sub has_input {
     my $self = shift;
 
     print $self->result->title($self->q->param("title") || "");
+    print $self->result->author($self->q->param("author") || "");
+    print $self->result->isbn($self->q->param("isbn") || "");
+    print $self->result->publisher($self->q->param("publisher") || "");
 
-    return $self->result->has_result;
+    return $self->result->has_input;
 }
 
 sub style {
