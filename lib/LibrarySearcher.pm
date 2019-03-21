@@ -82,10 +82,10 @@ sub print_result {
 sub has_input {
     my $self = shift;
 
-    print $self->result->title($self->q->param("title") || "");
-    print $self->result->author($self->q->param("author") || "");
-    print $self->result->isbn($self->q->param("isbn") || "");
-    print $self->result->publisher($self->q->param("publisher") || "");
+    $self->result->title($self->q->param("title") || "");
+    $self->result->author($self->q->param("author") || "");
+    $self->result->isbn($self->q->param("isbn") || "");
+    $self->result->publisher($self->q->param("publisher") || "");
 
     return $self->result->has_input;
 }
