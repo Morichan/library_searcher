@@ -6,8 +6,6 @@ use URI;
 use LWP::UserAgent;
 use XML::LibXML;
 
-use Data::Printer;
-
 use lib::ResultContaints;
 use lib::Title;
 use lib::Author;
@@ -21,13 +19,8 @@ has json => ( is => "rw" );
 has title => ( is => "rw" );
 has author => ( is => "rw" );
 has isbn => ( is => "rw" );
-has price => ( is => "rw" );
+has publisher => ( is => "rw" );
 has results => ( is => "rw" );
-
-sub BUILD {
-    my $self = shift;
-
-}
 
 sub explorer {
     my $self = shift;
@@ -39,11 +32,9 @@ sub explorer {
 
     my $results = [];
 
-    my $data = search_book();
+    my $data = $self->search_book($title, $author, $isbn, $publisher);
 
-    # foreach my $datum (@$data) {
-        $results = $self->concrete_results($data);
-    # }
+    $results = $self->concrete_results($data);
 
     $self->results($results);
 }
@@ -51,12 +42,18 @@ sub explorer {
 sub search_book {
     my $self = shift;
 
+    my $title = shift;
+    my $author = shift;
+    my $isbn = shift;
+    my $publisher = shift;
+
     # $self->uri("http://iss.ndl.go.jp/api/sru?operation=searchRetrieve&query=title%3d\"perl\"%20AND%20creator%3d\"phoenix\"&recordSchema=dcndl_simple");
     my $uri = URI->new('http://iss.ndl.go.jp/api/sru');
     $uri->query_form({
             operation => "searchRetrieve",
-            query => 'title="perl" AND creator="phoenix"',
-            recordSchema => "dcndl_simple"
+            query => $self->create_query($title, $author, $isbn, $publisher),
+            recordSchema => "dcndl_simple",
+            maximumRecords => 200
         });
 
     # print $uri->as_string;
@@ -72,6 +69,47 @@ sub search_book {
 
     my @book_data = $response_data->getElementsByTagName("dcndl_simple:dc");
     return \@book_data;
+}
+
+sub create_query {
+    my $self = shift;
+
+    my $title = shift;
+    my $author = shift;
+    my $isbn = shift;
+    my $publisher = shift;
+
+    my @queries;
+
+    if ($title) {
+        my $query .= 'title="';
+        $query .= $title;
+        $query .= '"';
+        push @queries, $query;
+    }
+
+    if ($author) {
+        my $query .= 'creator="';
+        $query .= $author;
+        $query .= '"';
+        push @queries, $query;
+    }
+
+    if ($isbn) {
+        my $query .= 'isbn="';
+        $query .= $isbn;
+        $query .= '"';
+        push @queries, $query;
+    }
+
+    if ($publisher) {
+        my $query .= 'publisher="';
+        $query .= $publisher;
+        $query .= '"';
+        push @queries, $query;
+    }
+
+    return join(" AND ", @queries);
 }
 
 sub concrete_results {

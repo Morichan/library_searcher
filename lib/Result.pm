@@ -87,7 +87,7 @@ sub show_containts_list {
 sub make_containts_list {
     my $self = shift;
 
-    $self->search_engine->explorer;
+    $self->search_engine->explorer($self->title, $self->author, $self->isbn, $self->publisher);
 
     $self->result_containts_list($self->search_engine->results);
 }
