@@ -1,5 +1,6 @@
 package lib::Index;
 
+use utf8;
 use Mouse;
 use CGI;
 

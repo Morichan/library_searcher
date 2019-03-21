@@ -1,5 +1,6 @@
 package lib::Title;
 
+use utf8;
 use Mouse;
 
 extends "lib::Param";

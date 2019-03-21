@@ -1,5 +1,6 @@
 package lib::SearchButton;
 
+use utf8;
 use Mouse;
 use CGI;
 

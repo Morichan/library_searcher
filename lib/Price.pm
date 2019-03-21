@@ -1,5 +1,6 @@
 package lib::Price;
 
+use utf8;
 use Mouse;
 
 extends "lib::Param";

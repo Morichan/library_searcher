@@ -1,5 +1,6 @@
 package lib::Result;
 
+use utf8;
 use Mouse;
 use CGI;
 
@@ -42,10 +43,6 @@ sub set_containts {
 
 sub show {
     my $self = shift;
-
-    if ($self->has_input) {
-        $self->make_containts_list;
-    }
 
     return (
         $self->q->start_div( {-class => "result"} ),

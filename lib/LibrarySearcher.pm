@@ -1,5 +1,6 @@
 package lib::LibrarySearcher;
 
+use utf8;
 use Mouse;
 use CGI;
 

@@ -1,5 +1,6 @@
 package lib::ResultContaints;
 
+use utf8;
 use Mouse;
 use CGI;
 
@@ -71,13 +72,6 @@ sub create_default_containts {
 
 sub make_containts {
     my $self = shift;
-
-    # $self->title->default(shift);
-    # $self->author->default(shift);
-    # $self->isbn->default(shift);
-    # $self->price->default(shift);
-    # $self->publisher->default(shift);
-    # $self->year->default(shift);
 
     $self->containts(
         $self->title->print_text .
