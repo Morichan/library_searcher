@@ -21,6 +21,7 @@ has author => ( is => "rw" );
 has isbn => ( is => "rw" );
 has publisher => ( is => "rw" );
 has results => ( is => "rw" );
+has is_error => ( is => "rw" );
 
 sub explorer {
     my $self = shift;
@@ -31,8 +32,14 @@ sub explorer {
     my $publisher = shift;
 
     my $results = [];
+    $self->is_error(0);
 
     my $data = $self->search_book($title, $author, $isbn, $publisher);
+
+    if ($self->is_error) {
+        $self->results("");
+        return;
+    }
 
     $results = $self->concrete_results($data);
 
@@ -63,8 +70,21 @@ sub search_book {
     # print "<p>".$uri->as_string."<p>";
 
     $ua->timeout(10); # second (not ms)
-    my $response_xml = $ua->get($uri)->content;
+    my $response;
 
+    eval {
+        $response = $ua->get($uri);
+    };
+
+    if ($@ and $@ =~ /timeout/) {
+        $self->is_error(1);
+        return;
+    } elsif ($response->is_error) {
+        $self->is_error(1);
+        return;
+    }
+
+    my $response_xml = $response->content;
     my $response_data = $xml->parse_string($response_xml);
 
     my @book_data = $response_data->getElementsByTagName("dcndl_simple:dc");
