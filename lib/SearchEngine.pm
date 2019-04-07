@@ -36,10 +36,10 @@ sub explorer {
 
     my $data = $self->search_book($title, $author, $isbn, $publisher);
 
-    if ($self->is_error) {
-        $self->results("");
-        return;
-    }
+    # if ($self->is_error) {
+    #     $self->results("Timeout!");
+    #     return;
+    # }
 
     $results = $self->concrete_results($data);
 
@@ -63,11 +63,8 @@ sub search_book {
             maximumRecords => 200
         });
 
-    # print $uri->as_string;
     my $ua = LWP::UserAgent->new;
     my $xml = XML::LibXML->new;
-
-    # print "<p>".$uri->as_string."<p>";
 
     $ua->timeout(10); # second (not ms)
     my $response;
@@ -76,10 +73,8 @@ sub search_book {
         $response = $ua->get($uri);
     };
 
-    if ($@ and $@ =~ /timeout/) {
-        $self->is_error(1);
-        return;
-    } elsif ($response->is_error) {
+    if ($response->is_error) {
+        print "Timeout";
         $self->is_error(1);
         return;
     }
