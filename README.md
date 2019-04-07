@@ -7,7 +7,7 @@
 # How to Use
 
 ```sh
-# carton install
+cpanm --installdeps .
 perl index.cgi
 ```
 
