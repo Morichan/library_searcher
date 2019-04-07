@@ -3,6 +3,7 @@ package lib::LibrarySearcher;
 use utf8;
 use Mouse;
 use CGI;
+use CSS::Tiny;
 
 use lib::Title;
 use lib::Author;
@@ -12,8 +13,8 @@ use lib::SearchButton;
 use lib::Result;
 
 has q => ( is => "rw" );
-has left => ( is => "ro", default => "float: left;" );
-has right => ( is => "ro", default => "float: right;" );
+has css => ( is => "rw" );
+has left => ( is => "rw" );
 has title => ( is => "rw" );
 has author => ( is => "rw" );
 has isbn => ( is => "rw" );
@@ -25,6 +26,8 @@ sub BUILD {
     my $self = shift;
 
     $self->q(CGI->new);
+    $self->css(CSS::Tiny->new);
+    $self->left({ float => "left" });
     $self->title(lib::Title->new);
     $self->author(lib::Author->new);
     $self->isbn(lib::ISBN->new);
@@ -93,22 +96,18 @@ sub has_input {
 sub style {
     my $self = shift;
 
-    my $text .= ".searchbox {\n";
-    $text .= "  " . $self->left . "\n";
-    $text .= "}\n";
-    $text .= ".result {\n";
-    $text .= "  " . $self->left . "\n";
-    $text .= "}\n";
-    $text .= "form {\n";
-    $text .= "  margin-inline-start: 1em;\n";
-    $text .= "  margin-inline-end: 1em;\n";
-    $text .= "}\n";
-    $text .= ".textfield {\n";
-    $text .= "  margin-top: 0.5em;\n";
-    $text .= "  margin-bottom: 0.5em;\n";
-    $text .= "}\n";
+    $self->css->{".searchbox"} = $self->left;
+    $self->css->{".result"} = $self->left;
+    $self->css->{"form"} = {
+        "margin-inline-start" => "1em",
+        "margin-inline-end" => "1em"
+    };
+    $self->css->{".textfield"} = {
+        "margin-top" => "0.5em",
+        "margin-bottom" => "0.5em"
+    };
 
-    return $text;
+    return $self->css->write_string;
 }
 
 1;
