@@ -7,34 +7,31 @@ use LWP::UserAgent;
 use XML::LibXML;
 
 use lib::ResultContaints;
-use lib::Title;
-use lib::Author;
-use lib::ISBN;
-use lib::Price;
-use lib::Publisher;
-use lib::Year;
 
-has ua => ( is => "rw" );
-has json => ( is => "rw" );
-has title => ( is => "rw" );
-has author => ( is => "rw" );
-has isbn => ( is => "rw" );
-has publisher => ( is => "rw" );
+has uri => ( is => "rw", isa => "URI", default => sub { URI->new('http://iss.ndl.go.jp/api/sru') } );
+has ua => ( is => "rw", isa => "LWP::UserAgent", default => sub { LWP::UserAgent->new } );
+has xml => ( is => "rw", isa => "XML::LibXML", default => sub { XML::LibXML->new } );
+has title => ( is => "rw", isa => "Str" );
+has author => ( is => "rw", isa => "Str" );
+has isbn => ( is => "rw", isa => "Str" );
+has publisher => ( is => "rw", isa => "Str" );
 has results => ( is => "rw" );
 has is_error => ( is => "rw" );
 
 sub explorer {
     my $self = shift;
 
-    my $title = shift;
-    my $author = shift;
-    my $isbn = shift;
-    my $publisher = shift;
+    if (@_ == 4) {
+        $self->title(shift);
+        $self->author(shift);
+        $self->isbn(shift);
+        $self->publisher(shift);
+    }
 
     my $results = [];
     $self->is_error(0);
 
-    my $data = $self->search_book($title, $author, $isbn, $publisher);
+    my $data = $self->search_book;
 
     # if ($self->is_error) {
     #     $self->results("Timeout!");
@@ -49,28 +46,20 @@ sub explorer {
 sub search_book {
     my $self = shift;
 
-    my $title = shift;
-    my $author = shift;
-    my $isbn = shift;
-    my $publisher = shift;
+    $self->ua->timeout(10); # second (not ms)
 
-    # $self->uri("http://iss.ndl.go.jp/api/sru?operation=searchRetrieve&query=title%3d\"perl\"%20AND%20creator%3d\"phoenix\"&recordSchema=dcndl_simple");
-    my $uri = URI->new('http://iss.ndl.go.jp/api/sru');
-    $uri->query_form({
+    # $self->uri(URI->new("http://iss.ndl.go.jp/api/sru?operation=searchRetrieve&query=title%3d\"perl\"%20AND%20creator%3d\"phoenix\"&recordSchema=dcndl_simple"));
+    $self->uri->query_form({
             operation => "searchRetrieve",
-            query => $self->create_query($title, $author, $isbn, $publisher),
+            query => $self->create_queries,
             recordSchema => "dcndl_simple",
             maximumRecords => 200
         });
 
-    my $ua = LWP::UserAgent->new;
-    my $xml = XML::LibXML->new;
-
-    $ua->timeout(10); # second (not ms)
     my $response;
 
     eval {
-        $response = $ua->get($uri);
+        $response = $self->ua->get($self->uri);
     };
 
     if ($response->is_error) {
@@ -79,52 +68,42 @@ sub search_book {
         return;
     }
 
-    my $response_xml = $response->content;
-    my $response_data = $xml->parse_string($response_xml);
-
+    my $response_data = $self->xml->parse_string($response->content);
     my @book_data = $response_data->getElementsByTagName("dcndl_simple:dc");
+
     return \@book_data;
+}
+
+sub create_queries {
+    my $self = shift;
+
+    my @queries;
+
+    if ($self->title) {
+        push @queries, $self->create_query("title", $self->title);
+    }
+
+    if ($self->author) {
+        push @queries, $self->create_query("creator", $self->author);
+    }
+
+    if ($self->isbn) {
+        push @queries, $self->create_query("isbn", $self->isbn);
+    }
+
+    if ($self->publisher) {
+        push @queries, $self->create_query("publisher", $self->publisher);
+    }
+
+    return join(" AND ", @queries);
 }
 
 sub create_query {
     my $self = shift;
-
     my $title = shift;
-    my $author = shift;
-    my $isbn = shift;
-    my $publisher = shift;
+    my $param = shift;
 
-    my @queries;
-
-    if ($title) {
-        my $query .= 'title="';
-        $query .= $title;
-        $query .= '"';
-        push @queries, $query;
-    }
-
-    if ($author) {
-        my $query .= 'creator="';
-        $query .= $author;
-        $query .= '"';
-        push @queries, $query;
-    }
-
-    if ($isbn) {
-        my $query .= 'isbn="';
-        $query .= $isbn;
-        $query .= '"';
-        push @queries, $query;
-    }
-
-    if ($publisher) {
-        my $query .= 'publisher="';
-        $query .= $publisher;
-        $query .= '"';
-        push @queries, $query;
-    }
-
-    return join(" AND ", @queries);
+    return "$title=\"$param\"";
 }
 
 sub concrete_results {
@@ -174,7 +153,9 @@ sub make_isbn {
     my $datum = shift;
 
     foreach my $text ($datum->getElementsByTagName("dc:identifier")) {
-        return $text->textContent if index($text, "ISBN") != -1;
+        if (index($text, "ISBN") != -1) {
+            return $text->textContent;
+        }
     }
 
     return "";

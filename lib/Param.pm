@@ -2,9 +2,8 @@ package lib::Param;
 
 use utf8;
 use Mouse;
-use CGI;
 
-has q => ( is => "rw" );
+has q => ( is => "rw", isa => "CGI" );
 has class_name => ( is => "ro", default => "library_param" );
 has title => ( is => "rw", default => "____" );
 has name => ( is => "rw", default => "____" );
@@ -15,7 +14,6 @@ has maxlength => ( is => "rw", default => 524288);
 sub BUILD {
     my $self = shift;
 
-    $self->q(CGI->new);
     $self->default(shift) if @_;
 }
 

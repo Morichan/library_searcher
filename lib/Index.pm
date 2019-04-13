@@ -6,14 +6,14 @@ use CGI;
 
 use lib::LibrarySearcher;
 
-has q => ( is => "rw" );
+has q => ( is => "rw", isa => "CGI" );
 has library_searcher => ( is => "rw" );
 
 sub BUILD {
     my $self = shift;
 
     $self->q(CGI->new);
-    $self->library_searcher(lib::LibrarySearcher->new);
+    $self->library_searcher(lib::LibrarySearcher->new( q => $self->q ));
 }
 
 sub show {
@@ -21,7 +21,6 @@ sub show {
 
     $self->header;
     $self->start;
-    # $self->h1("Hello");
 
     $self->library_searcher->show;
 

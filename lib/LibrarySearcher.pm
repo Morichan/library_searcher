@@ -13,11 +13,12 @@ use lib::SearchButton;
 use lib::OptionMenu;
 use lib::Result;
 
-has q => ( is => "rw" );
-has css => ( is => "rw" );
-has left => ( is => "rw" );
+has q => ( is => "rw", isa => "CGI", required => 1 );
+has css => ( is => "rw", isa => "CSS::Tiny", default => sub { CSS::Tiny->new } );
+has left => ( is => "ro", default => sub { { float => "left" } } );
 has class_name => ( is => "ro", default => "library_searcher" );
 has searchbox_class_name => ( is => "ro", default => "searchbox" );
+has has_input => ( is => "rw", default => 0 );
 has title => ( is => "rw" );
 has author => ( is => "rw" );
 has isbn => ( is => "rw" );
@@ -29,27 +30,23 @@ has result => ( is => "rw" );
 sub BUILD {
     my $self = shift;
 
-    $self->q(CGI->new);
-    $self->css(CSS::Tiny->new);
-    $self->left({ float => "left" });
-    $self->title(lib::Title->new);
-    $self->author(lib::Author->new);
-    $self->isbn(lib::ISBN->new);
-    $self->publisher(lib::Publisher->new);
-    $self->search_button(lib::SearchButton->new);
-    $self->search_button->q($self->q);
-    $self->option_menu(lib::OptionMenu->new);
-    $self->option_menu->q($self->q);
-    $self->result(lib::Result->new);
+    $self->title(lib::Title->new( q => $self->q ));
+    $self->author(lib::Author->new( q => $self->q ));
+    $self->isbn(lib::ISBN->new( q => $self->q ));
+    $self->publisher(lib::Publisher->new( q => $self->q ));
+    $self->search_button(lib::SearchButton->new( q => $self->q ));
+    $self->option_menu(lib::OptionMenu->new( q => $self->q ));
+    $self->result(lib::Result->new( q => $self->q ));
 }
 
 sub show {
     my $self = shift;
 
-    $self->containts($self->print_searchbox, $self->print_result);
+    $self->has_input(0);
+    $self->print_html($self->show_searchbox, $self->show_result);
 }
 
-sub containts {
+sub print_html {
     my $self = shift;
     my $containts = \@_;
 
@@ -62,7 +59,7 @@ sub containts {
     print $self->q->end_div;
 }
 
-sub print_searchbox {
+sub show_searchbox {
     my $self = shift;
 
     return (
@@ -79,8 +76,10 @@ sub print_searchbox {
         "\n\n");
 }
 
-sub print_result {
+sub show_result {
     my $self = shift;
+
+    $self->get_parameters;
 
     if ($self->has_input) {
         $self->result->make_containts_list;
@@ -89,7 +88,7 @@ sub print_result {
     return $self->result->show;
 }
 
-sub has_input {
+sub get_parameters {
     my $self = shift;
 
     $self->result->title($self->q->param("title") || "");
@@ -97,7 +96,7 @@ sub has_input {
     $self->result->isbn($self->q->param("isbn") || "");
     $self->result->publisher($self->q->param("publisher") || "");
 
-    return $self->result->has_input;
+    $self->has_input($self->result->has_input);
 }
 
 sub style {

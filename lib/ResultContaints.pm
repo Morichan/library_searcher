@@ -2,7 +2,6 @@ package lib::ResultContaints;
 
 use utf8;
 use Mouse;
-use CGI;
 
 use lib::Title;
 use lib::Author;
@@ -11,7 +10,6 @@ use lib::Price;
 use lib::Publisher;
 use lib::Year;
 
-has q => ( is => "rw" );
 has name => ( is => "ro", default => "result" );
 has containts => ( is => "rw", default => "" );
 has title => ( is => "rw" );
@@ -24,7 +22,6 @@ has year => ( is => "rw" );
 sub BUILD {
     my $self = shift;
 
-    $self->q(CGI->new);
     $self->title(lib::Title->new);
     $self->author(lib::Author->new);
     $self->isbn(lib::ISBN->new);

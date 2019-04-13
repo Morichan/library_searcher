@@ -2,27 +2,18 @@ package lib::Result;
 
 use utf8;
 use Mouse;
-use CGI;
 
 use lib::ResultContaints;
 use lib::SearchEngine;
 
-has q => ( is => "rw" );
+has q => ( is => "rw", isa => "CGI" );
 has class_name => ( is => "ro", default => "result" );
-has result_containts_list => ( is => "rw" );
-has title => ( is => "rw" );
-has author => ( is => "rw" );
-has isbn => ( is => "rw" );
-has publisher => ( is => "rw" );
-has search_engine => ( is => "rw" );
-
-sub BUILD {
-    my $self = shift;
-
-    $self->q(CGI->new);
-    $self->search_engine(lib::SearchEngine->new);
-    $self->result_containts_list([lib::ResultContaints->new]);
-}
+has title => ( is => "rw", isa => "Str" );
+has author => ( is => "rw", isa => "Str" );
+has isbn => ( is => "rw", isa => "Str" );
+has publisher => ( is => "rw", isa => "Str" );
+has search_engine => ( is => "rw", default => sub { lib::SearchEngine->new } );
+has result_containts_list => ( is => "rw", default => sub { [lib::ResultContaints->new] } );
 
 sub has_input {
     my $self = shift;
@@ -33,12 +24,6 @@ sub has_input {
         $self->isbn eq "" and
         $self->publisher eq ""
     );
-}
-
-sub set_containts {
-    my $self = shift;
-
-    $self->title(shift);
 }
 
 sub show {
