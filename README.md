@@ -7,6 +7,7 @@
 # How to Use
 
 ```sh
+# from CGI directory
 cpanm --installdeps .
 perl index.cgi
 ```
