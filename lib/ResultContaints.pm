@@ -63,7 +63,7 @@ sub create_default_containts {
         "\n" .
         $self->year->print_text .
         "\n\n" .
-        "全ての項目を埋める必要はありません。"
+        "全ての検索窓の項目を埋める必要はありません。"
     );
 }
 
