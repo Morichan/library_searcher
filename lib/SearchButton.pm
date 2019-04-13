@@ -5,6 +5,7 @@ use Mouse;
 use CGI;
 
 has q => ( is => "rw" );
+has class_name => ( is => "ro", default => "search_button" );
 has name => ( is => "rw", default => "search_button" );
 has value => ( is => "rw", default => '検索' );
 has click_count => ( is => "rw", default => 0 );
@@ -18,7 +19,7 @@ sub show {
     my $self = shift;
 
     return (
-        $self->q->start_div({-class => "button"}),
+        $self->q->start_div({-class => $self->class_name}),
         $self->q->submit($self->name, $self->value),
         $self->q->end_div,
         "\n");

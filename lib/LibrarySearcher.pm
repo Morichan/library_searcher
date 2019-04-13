@@ -103,21 +103,6 @@ sub style {
 
     $self->css->{".searchbox"} = $self->left;
     $self->css->{".result"} = $self->left;
-    $self->css->{".hidden_menu input"} = {
-        display => "none"
-    };
-    $self->css->{".hidden_menu .hidden_show"} = {
-        height => 0,
-        padding => 0,
-        overflow => "hidden",
-        opacity => 0,
-        transition => "0.8s"
-    };
-    $self->css->{".hidden_menu input:checked ~ .hidden_show"} = {
-        padding => "10px 0",
-        height => "auto",
-        opacity => 1
-    };
     $self->css->{"form"} = {
         "margin-inline-start" => "1em",
         "margin-inline-end" => "1em"
@@ -125,6 +110,29 @@ sub style {
     $self->css->{".textfield"} = {
         "margin-top" => "0.5em",
         "margin-bottom" => "0.5em"
+    };
+    $self->css->{"." . $self->search_button->class_name} = {
+        "margin-top" => "0.5em",
+        "margin-bottom" => "0.5em"
+    };
+    $self->css->{"." . $self->option_menu->class_name} = {
+        "margin-top" => "0.5em",
+        "margin-bottom" => "0.5em"
+    };
+    $self->css->{"." . $self->option_menu->class_name . " input"} = {
+        display => "none"
+    };
+    $self->css->{"." . $self->option_menu->class_name . " .hidden_show"} = {
+        height => 0,
+        padding => 0,
+        overflow => "hidden",
+        opacity => 0,
+        transition => "0.8s"
+    };
+    $self->css->{"." . $self->option_menu->class_name . " input:checked ~ .hidden_show"} = {
+        padding => "10px 0",
+        height => "auto",
+        opacity => 1
     };
 
     return $self->css->write_string;
