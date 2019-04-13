@@ -5,6 +5,7 @@ use Mouse;
 use CGI;
 
 has q => ( is => "rw" );
+has class_name => ( is => "ro", default => "library_param" );
 has title => ( is => "rw", default => "____" );
 has name => ( is => "rw", default => "____" );
 has default => ( is => "rw", default => "default" );
@@ -22,7 +23,7 @@ sub show {
     my $self = shift;
 
     return (
-        $self->q->start_div({-class => "textfield"}),
+        $self->q->start_div( { -class => $self->class_name } ),
         $self->q->p($self->title . ":"),
         $self->q->p($self->q->textfield(
                 -name => $self->name,

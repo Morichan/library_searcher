@@ -16,6 +16,8 @@ use lib::Result;
 has q => ( is => "rw" );
 has css => ( is => "rw" );
 has left => ( is => "rw" );
+has class_name => ( is => "ro", default => "library_searcher" );
+has searchbox_class_name => ( is => "ro", default => "searchbox" );
 has title => ( is => "rw" );
 has author => ( is => "rw" );
 has isbn => ( is => "rw" );
@@ -51,7 +53,7 @@ sub containts {
     my $self = shift;
     my $containts = \@_;
 
-    print $self->q->start_div( {-class => "containts"} );
+    print $self->q->start_div( { -class => $self->class_name } );
 
     foreach (@$containts) {
         print $_;
@@ -64,7 +66,7 @@ sub print_searchbox {
     my $self = shift;
 
     return (
-        $self->q->start_div( {-class => "searchbox"} ),
+        $self->q->start_div( { -class => $self->searchbox_class_name } ),
         $self->q->start_form( -method => "POST" ),
         $self->title->show,
         $self->author->show,
@@ -101,41 +103,54 @@ sub has_input {
 sub style {
     my $self = shift;
 
-    $self->css->{".searchbox"} = $self->left;
-    $self->css->{".result"} = $self->left;
+    $self->css->{$self->dot($self->searchbox_class_name)} = $self->left;
+    $self->css->{$self->dot($self->result->class_name)} = $self->left;
+
     $self->css->{"form"} = {
         "margin-inline-start" => "1em",
         "margin-inline-end" => "1em"
     };
-    $self->css->{".textfield"} = {
+
+    $self->css->{$self->dot($self->title->class_name)} = {
         "margin-top" => "0.5em",
         "margin-bottom" => "0.5em"
     };
-    $self->css->{"." . $self->search_button->class_name} = {
+
+    $self->css->{$self->dot($self->search_button->class_name)} = {
         "margin-top" => "0.5em",
         "margin-bottom" => "0.5em"
     };
-    $self->css->{"." . $self->option_menu->class_name} = {
+
+    $self->css->{$self->dot($self->option_menu->class_name)} = {
         "margin-top" => "0.5em",
         "margin-bottom" => "0.5em"
     };
-    $self->css->{"." . $self->option_menu->class_name . " input"} = {
+    $self->css->{$self->dot($self->option_menu->class_name) . " input"} = {
         display => "none"
     };
-    $self->css->{"." . $self->option_menu->class_name . " .hidden_show"} = {
+    $self->css->{$self->dot($self->option_menu->class_name) . " " .
+            $self->dot($self->option_menu->menu_class_name)} = {
         height => 0,
         padding => 0,
         overflow => "hidden",
         opacity => 0,
         transition => "0.8s"
     };
-    $self->css->{"." . $self->option_menu->class_name . " input:checked ~ .hidden_show"} = {
+    $self->css->{$self->dot($self->option_menu->class_name) . " input:checked ~ " .
+            $self->dot($self->option_menu->menu_class_name)} = {
         padding => "10px 0",
         height => "auto",
         opacity => 1
     };
 
     return $self->css->write_string;
+}
+
+sub dot {
+    my $self = shift;
+    my $class_name = shift;
+
+    return "." . $class_name;
 }
 
 1;

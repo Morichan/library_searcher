@@ -8,7 +8,7 @@ use lib::ResultContaints;
 use lib::SearchEngine;
 
 has q => ( is => "rw" );
-has name => ( is => "ro", default => "result" );
+has class_name => ( is => "ro", default => "result" );
 has result_containts_list => ( is => "rw" );
 has title => ( is => "rw" );
 has author => ( is => "rw" );
@@ -45,7 +45,7 @@ sub show {
     my $self = shift;
 
     return (
-        $self->q->start_div( {-class => "result"} ),
+        $self->q->start_div( { -class => $self->class_name } ),
         $self->q->start_form( -method => "POST" ),
         $self->show_result_area,
         $self->q->end_form,
@@ -57,9 +57,9 @@ sub show_result_area {
     my $self = shift;
 
     return $self->q->p(
-        $self->q->start_div({-class => "result"}),
+        $self->q->start_div( { -class => $self->class_name } ),
         $self->q->textarea(
-            -name => $self->name,
+            -name => $self->class_name,
             -default => $self->show_containts_list,
             -rows => 50,
             -columns => 50),
