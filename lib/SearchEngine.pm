@@ -114,12 +114,12 @@ sub concrete_results {
 
     foreach my $datum (@$data) {
         my $result = lib::ResultContaints->new;
-        $result->title->default($self->make_title($datum));
-        $result->author->default($self->make_author($datum));
-        $result->isbn->default($self->make_isbn($datum));
-        $result->price->default($self->make_price($datum));
-        $result->publisher->default($self->make_publisher($datum));
-        $result->year->default($self->make_year($datum));
+        $result->title->value($self->make_title($datum));
+        $result->author->value($self->make_author($datum));
+        $result->isbn->value($self->make_isbn($datum));
+        $result->price->value($self->make_price($datum));
+        $result->publisher->value($self->make_publisher($datum));
+        $result->year->value($self->make_year($datum));
         $result->make_containts;
 
         push @$results, $result;

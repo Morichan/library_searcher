@@ -9,7 +9,7 @@ sub BUILD {
     my $self = shift;
 
     $self->title('出版社');
-    $self->default('オライリー・ジャパン');
+    $self->value('オライリー・ジャパン');
     $self->name("publisher");
 }
 

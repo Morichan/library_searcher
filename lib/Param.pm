@@ -7,14 +7,14 @@ has q => ( is => "rw", isa => "CGI" );
 has class_name => ( is => "ro", default => "library_param" );
 has title => ( is => "rw", default => "____" );
 has name => ( is => "rw", default => "____" );
-has default => ( is => "rw", default => "default" );
+has value => ( is => "rw", default => "default" );
 # https://pointoht.ti-da.net/e6782591.html より
 has maxlength => ( is => "rw", default => 524288);
 
 sub BUILD {
     my $self = shift;
 
-    $self->default(shift) if @_;
+    $self->value(shift) if @_;
 }
 
 sub show {
@@ -25,7 +25,7 @@ sub show {
         $self->q->p($self->title . ":"),
         $self->q->p($self->q->textfield(
                 -name => $self->name,
-                -default => $self->default,
+                -value => $self->value,
                 -size => 50,
                 -maxlength => $self->maxlength)),
         $self->q->end_div,
@@ -35,7 +35,7 @@ sub show {
 sub print_text {
     my $self = shift;
 
-    $self->title . ": " . $self->default;
+    $self->title . ": " . $self->value;
 }
 
 1;

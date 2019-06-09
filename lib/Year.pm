@@ -9,7 +9,7 @@ sub BUILD {
     my $self = shift;
 
     $self->title('出版年');
-    $self->default('2018');
+    $self->value('2018');
     $self->name("year");
 }
 

@@ -45,7 +45,7 @@ sub show_result_area {
         $self->q->start_div( { -class => $self->class_name } ),
         $self->q->textarea(
             -name => $self->class_name,
-            -default => $self->show_containts_list,
+            -value => $self->show_containts_list,
             -rows => 50,
             -columns => 50),
         $self->q->end_div,

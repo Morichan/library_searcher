@@ -41,12 +41,12 @@ sub show {
 sub create_default_containts {
     my $self = shift;
 
-    $self->title->default("");
-    $self->author->default("");
-    $self->isbn->default("");
-    $self->price->default("");
-    $self->publisher->default("");
-    $self->year->default("");
+    $self->title->value("");
+    $self->author->value("");
+    $self->isbn->value("");
+    $self->price->value("");
+    $self->publisher->value("");
+    $self->year->value("");
 
     $self->containts(
         "ここに結果を出力します。" .
